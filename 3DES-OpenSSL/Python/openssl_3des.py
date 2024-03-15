@@ -26,21 +26,22 @@ def triple_des_decrypt(input_data, key):
     return unpad_data(decrypted_data)
 
 def main():
+    print (" ============================ 3DES (PYTHON) ==========================")
     # Replace these key bytes with your actual Triple DES key
     key_bytes = b'\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10'
     
-    plaintext = b'The quick brown fox jumps over the lazy dog'
-    print ("Plaintext (Python): ", plaintext.decode('utf-8'))
+    plaintext = b'I got 1 in ASEL '
+    print ("Plaintext: ", plaintext.decode('utf-8'))
     # Create a Triple DES key from the key bytes
     key = key_bytes
 
     # Encrypt the message
     encrypted_data = triple_des_encrypt(plaintext, key)
-    print("Ciphertext (Python): ", binascii.hexlify(encrypted_data).decode('utf-8'))
+    print("Ciphertext: ", binascii.hexlify(encrypted_data).decode('utf-8'))
 
     # Decrypt the message
     decrypted_data = triple_des_decrypt(encrypted_data, key)
-    print("Decrypted (Python): ", decrypted_data.decode('utf-8'))
+    print("Decrypted: ", decrypted_data.decode('utf-8'))
 
 if __name__ == "__main__":
     main()

@@ -26,11 +26,12 @@ def single_des_decrypt(input_data, key):
     return unpad_data(decrypted_data)
 
 def main():
+    print(" ================================== DES (PYTHON) =========================================")
     # Replace these key bytes with your actual Triple DES key
     key_bytes = b'\x01\x23\x45\x67\x89\xAB\xCD\xEF\xFE\xDC\xBA\x98\x76\x54\x32\x10'
     
-    plaintext = b'The quick brown fox jumps over the lazy dog'
-
+    plaintext = b'I got 1 in ASEL '
+    print("Plaintext is: ", plaintext.decode('utf-8'))
     # Use only the first 8 bytes of the key for single DES
     single_des_key = key_bytes[:8]
 

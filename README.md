@@ -42,8 +42,3 @@ Press on it
     * **Number baud**
         * For the *Number baud* select *115200 baud*
 * Once all these steps are done, you should be able to see the output from the ESP Device
-
-
-## OpenSSL installation on Windows 
-* Perl Installation
-* Nasm.us Installation

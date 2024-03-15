@@ -549,16 +549,17 @@ char* remove_custom_padding(char* hex_input) {
 }
 
 int main() {
-    // char* my_key = genKey();
+    // char* my_key = genKey(); // To generate a random key
+    printf ("======================= DES (C) ==========================\n");
     char* my_key = "0011011000110100011000100110100101110100010010110110010101111001";
     generate_keys(my_key);
     char* ptString = "I got 1 in ASEL ";
-    printf("Plaintext hex (C)      : %s\n", stringToHex(ptString));
+    printf("Plaintext: %s\n", stringToHex(ptString));
     char* encrypted_text = des_encrypt_text(ptString);
-    printf ("Ciphertext Hex (C)     : %s\n", binaryToHex(encrypted_text));
+    printf ("Ciphertext: %s\n", binaryToHex(encrypted_text));
     //printf("encrypted_text: %s\n", encrypted_text);
     char* decrypted_text = des_decrypt_text(encrypted_text);
-    printf ("decrypted text Hex (C) : %s\n", binaryToHex(decrypted_text));
+    printf ("decrypted text: %s\n", binaryToHex(decrypted_text));
     // printf("Decrypted Hex: %s\n", binaryToHex(decrypted_text));
     return 0;
 }

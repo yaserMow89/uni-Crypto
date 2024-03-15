@@ -288,9 +288,11 @@ def des_decrypt_text(ct_string):
     return decrypted
 
 if __name__ == '__main__':
+    
+    print ("======================= 3DES (PYTHON) ==========================")
     my_key = "101010101011101100001001000110000010011100110110110011001101110110101010101110110000100100011000001001110011011011001100110111011010101010111011000010010001100000100111001101101100110011011101"
-    ptString = "The quick fox jumps over the lazy dog" 
-    print("Plaintext (Python): ", stringToHex(ptString))
+    ptString = "I got 1 in ASEL " 
+    print("Plaintext: ", stringToHex(ptString))
     if len(my_key) == 192 and ptString:
         key1, key2, key3 = my_key[0:64],my_key[64:128], my_key[128:192] 
         generate_keys(key1)
@@ -299,12 +301,12 @@ if __name__ == '__main__':
         encrypted_text = des_decrypt_text(encrypted_text)
         generate_keys(key3)
         encrypted_text = des_encrypt_text(binaryToString(encrypted_text))
-        print("Encrypted Text (Python): ", binaryToHex(encrypted_text))
+        print("Encrypted Text: ", binaryToHex(encrypted_text))
 
         decrypted_text = des_decrypt_text(encrypted_text)
         generate_keys(key2)
         decrypted_text = des_encrypt_text(binaryToString(decrypted_text))
         generate_keys(key1)
         decrypted_text = des_decrypt_text(decrypted_text)
-        print("Decrypted text (Python): ",binaryToHex(decrypted_text))
+        print("Decrypted text: ",binaryToHex(decrypted_text))
 

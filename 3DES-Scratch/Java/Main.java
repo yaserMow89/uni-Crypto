@@ -7,9 +7,10 @@ public class Main {
     private static List<String> round_keys = new ArrayList<>();
     public static void main(String[] args) 
     {
+        System.out.println("======================== 3DES (JAVA) ===================== ");
         String myKey = "101010101011101100001001000110000010011100110110110011001101110110101010101110110000100100011000001001110011011011001100110111011010101010111011000010010001100000100111001101101100110011011101"; // Replace with your key
-        String ptString = "The quick brown fox jumped over the lazy dog"; // Replace with your plaintext
-        System.out.println("Plain text (Java): " + stringToHex(ptString));
+        String ptString = "I got 1 in ASEL "; 
+        System.out.println("Plain text: " + stringToHex(ptString));
 
         if (myKey.length() == 192 && ptString != null) {
             String key1 = myKey.substring(0, 64);
@@ -22,13 +23,13 @@ public class Main {
             encryptedText = des_decrypt_text(encryptedText);
             generate_keys(key3);
             encryptedText = des_encrypt_text(binaryToString(encryptedText));
-            System.out.println("Encryted Text (Java): " + binaryToHex(encryptedText));
+            System.out.println("Encryted Text: " + binaryToHex(encryptedText));
             String decryptedText = des_decrypt_text(encryptedText);
             generate_keys(key2);
             decryptedText = des_encrypt_text(binaryToString(decryptedText));
             generate_keys(key1);
             decryptedText = des_decrypt_text(decryptedText);
-            System.out.println("Decrypted Text (Java): " + binaryToHex(decryptedText));
+            System.out.println("Decrypted Text: " + binaryToHex(decryptedText));
         }
         else 
         {

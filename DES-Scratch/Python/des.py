@@ -287,13 +287,15 @@ def des_decrypt_text(ct_string):
         decrypted += desDecryption(block)
     return decrypted
 
+
+print ("======================= DES (PYTHON) =======================")
 my_key = "1010101010111011000010010001100000100111001101101100110011011101"
 generate_keys(my_key)
-ptString = "The quick brown fox jumps over the lazy dog"
-print("Plaintext hex: (Python)", stringToHex(ptString))
+ptString = "I got 1 in ASEL "
+print("Plaintext: ", stringToHex(ptString))
 encrypted_text = des_encrypt_text(ptString)
 decrypted_text = des_decrypt_text(encrypted_text)
-print("encrypted Hex: (Python)", binaryToHex(encrypted_text))
-print("decrypted Hex: (Python)", binaryToHex(decrypted_text))
+print("encrypted: ", binaryToHex(encrypted_text))
+print("decrypted: ", binaryToHex(decrypted_text))
 
 

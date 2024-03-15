@@ -535,9 +535,11 @@ char* des_decrypt_text(char* ct_string)
 
 int main() 
 {
+
+    printf (" =========================== 3DES (C) =================================== \n");
     char my_key[256] = "101010101011101100001001000110000010011100110110110011001101110110101010101110110000100100011000001001110011011011001100110111011010101010111011000010010001100000100111001101101100110011011101";
-    char *ptString = "the quick brown fox jumped over the lazy dog";
-    printf ("Before Enc PT is (C): %s\n ", stringToHex(ptString));
+    char *ptString = "I got 1 in ASEL ";
+    printf ("Plaintext is:  %s\n ", stringToHex(ptString));
 
     if (strlen(my_key) == 192 && strlen(ptString) > 0) 
     {
@@ -566,7 +568,7 @@ int main()
         generate_keys(key1);
         decrypted_text = des_decrypt_text(decrypted_text);
 
-        printf("After Enc CT is (C): %s\n",binaryToHex(decrypted_text));
+        printf("Decrypted Text is: %s\n",binaryToHex(decrypted_text));
     }
     return 0;
 }

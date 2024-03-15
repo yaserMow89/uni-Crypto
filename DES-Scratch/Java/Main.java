@@ -7,14 +7,15 @@ public class Main {
     private static List<String> round_keys = new ArrayList<>();
 
     public static void main(String[] args) {
+        System.out.println("======================= DES (JAVA) ========================");
         String my_key = "1010101010111011000010010001100000100111001101101100110011011101";
         generate_keys(my_key);
-        String ptString = "The quick brown fox jumps over the lazy dog";
-        System.out.println("Plaintext hex (JAVA: " + stringToHex(ptString));
+        String ptString = "I got 1 in ASEL ";
+        System.out.println("Plaintext: " + stringToHex(ptString));
         String encrypted_text = des_encrypt_text(ptString);
         String decrypted_text = des_decrypt_text(encrypted_text);
-        System.out.println("encrypted Hex (JAVA): " + binaryToHex(encrypted_text));
-        System.out.println("decrypted Text (JAVA): " + binaryToHex(decrypted_text));
+        System.out.println("encrypted: " + binaryToHex(encrypted_text));
+        System.out.println("decrypted: " + binaryToHex(decrypted_text));
     }
 
     public static String byteToBinary(char byteValue) {

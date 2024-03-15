@@ -430,15 +430,16 @@ string des_decrypt_text(string ct_string)
 
 int main() 
 {
+    cout << "================================== DES (C++)=================================" << endl; 
     string my_key = "1010101010111011000010010001100000100111001101101100110011011101";
     generate_keys(my_key);
-    string ptString = "The quick brown fox jumps over the lazy dog";
-    cout << "Plaintext hex (C++): " << (stringToHex(ptString)) <<endl;
+    string ptString = "I got 1 in ASEL ";
+    cout << "Plaintext: " << (stringToHex(ptString)) <<endl;
     string encrypted_text = des_encrypt_text(ptString);
     // cout << "Encrypted Text (C++): " << encrypted_text << endl; 
     
     string decrypted_text = des_decrypt_text(encrypted_text);
-    cout << "encrypted Hex (C++): " << binaryToHex(encrypted_text) <<endl;
-    cout << "decrypted Hex (C++): " << binaryToHex(decrypted_text) <<endl;
+    cout << "encrypted: " << binaryToHex(encrypted_text) <<endl;
+    cout << "decrypted: " << binaryToHex(decrypted_text) <<endl;
     return 0;
 }
