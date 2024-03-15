@@ -435,11 +435,13 @@ void setup() {
 
 void loop() {
     unsigned long start_time = millis();
+
+    std::cout <<" ============================== 3DES (C++) ======================== " <<endl;
   // put your main code here, to run repeatedly:
     string my_key = "101010101011101100001001000110000010011100110110110011001101110110101010101110110000100100011000001001110011011011001100110111011010101010111011000010010001100000100111001101101100110011011101";
     generate_keys(my_key);
     string ptString = "I got 1 in ASEL ";
-    std::cout << "Plain text (C++): " << stringToHex(ptString) << endl; 
+    std::cout << "Plain text: " << stringToHex(ptString) << endl; 
     if (my_key.length() == 192 && !ptString.empty()) 
     {
         std::string key1 = my_key.substr(0, 64);
@@ -454,7 +456,7 @@ void loop() {
 
         generate_keys(key3.c_str());
         encrypted_text = des_encrypt_text(binaryToString(encrypted_text.c_str())); 
-        std::cout << "Encrypted Text (C++): " << binaryToHex(encrypted_text) << endl;
+        std::cout << "Encrypted Text: " << binaryToHex(encrypted_text) << endl;
         std::string decrypted_text = des_decrypt_text(encrypted_text.c_str());
 
         generate_keys(key2.c_str());
@@ -463,8 +465,10 @@ void loop() {
         generate_keys(key1.c_str());
         decrypted_text = des_decrypt_text(decrypted_text.c_str());
 
-        std::cout << "Decrypted Text (C++): "<< binaryToHex(decrypted_text) << std::endl;
+        std::cout << "Decrypted Text: "<< binaryToHex(decrypted_text) << std::endl;
     }
+
+  // Followings are for measurement purposes
     Serial.print("Free Heap: ");
     Serial.print(ESP.getFreeHeap());
     Serial.println(" bytes"); 
@@ -472,5 +476,5 @@ void loop() {
     Serial.print("Execution Time: ");
     Serial.print(end_time - start_time);
     Serial.println("milliseconds");
-    delay (30000); // 3 Seconds of delay for better visibility
+    delay (20000);
 }

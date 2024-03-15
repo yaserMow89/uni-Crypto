@@ -68,7 +68,7 @@ void three_des()
   {
     in_bytes[i] = out_bytes[i];
   }
-  cout << "Decrypted Hex: (C++)" << endl;
+  cout << "Decrypted Hex: " << endl;
   
   // Decryption
   Des.tripleDecrypt(out_bytes, in_bytes, key);

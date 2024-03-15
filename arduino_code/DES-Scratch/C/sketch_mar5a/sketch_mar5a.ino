@@ -555,6 +555,8 @@ void setup() {
 void loop() {
     unsigned long start_time = millis();
 
+
+    printf ("======================= DES (C) ========================= ");
   // put your main code here, to run repeatedly:
     // char* my_key = genKey();
     char* my_key = "001101100011010001100010010101110100010010110110010101111001";
@@ -566,14 +568,27 @@ void loop() {
     char* decrypted_text = des_decrypt_text(encrypted_text);
     printf("Decrypted Hex: %s\n", binaryToHex(decrypted_text));
 
-
+    // Followings are for measurement purposes
     Serial.print("Free Heap: ");
     Serial.print(ESP.getFreeHeap());
-    Serial.println(" bytes"); 
+    Serial.println(" bytes");
     unsigned long end_time = millis();
     Serial.print("Execution Time: ");
     Serial.print(end_time - start_time);
     Serial.println("milliseconds");
-    delay (300000); // 3 Seconds of delay for better visibility
+    delay(20000);
 
 }
+
+// Output for 128 bits "I got 1 in ASEL "
+  // ESP-ROM:esp32s3-20210327
+  // Build:Mar 27 2021
+  // rst:0x8 (TG1WDT_SYS_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+  // Saved PC:0x4200a26f
+  // SPIWP:0xee
+  // mode:DIO, clock div:1
+  // load:0x3fce3808,len:0x44c
+  // load:0x403c9700,len:0xbe4
+  // load:0x403cc700,len:0x2a68
+  // entry 0x403c98d4
+  // Plaintext hex: 4920676F74203120696E204153454C20

@@ -23,8 +23,6 @@ void des() {
     unsigned char in_bytes[] = {101, 110, 99, 114, 121, 112, 116, 100};
     unsigned char key[] = {0x62, 0x65, 0x64, 0x61, 0x6E, 0x67, 0x61, 0x74};
     
-    printf("\n========= DES test ==========\n");
-    
     printf("Plaintext Hex: ");
     printArrayHex(in_bytes);
 
@@ -52,7 +50,7 @@ void loop() {
   unsigned long start_time = millis();
  
   printf ("======================= DES (C) ========================= ");
-  des();
+  des();c:\Users\yaser\Desktop\Uni\05\ASEL\uni-Crypto\arduino_code\3DES-Scratch\C\sketch_mar5a\sketch_mar5a.ino
 
 
   // Followings are for measurement purposes

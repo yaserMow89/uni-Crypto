@@ -439,27 +439,28 @@ int main (){
 
 void loop() {
 
+  cout << " =========================== DES (C++) ========================" << endl;
     unsigned long start_time = millis();
 
   // put your main code here, to run repeatedly:
     string my_key = "1010101010111011000010010001100000100111001101101100110011011101";
     generate_keys(my_key);
     string ptString = "I got 1 in ASEL ";
-    cout << "Plaintext hex (C++): " << (stringToHex(ptString)) <<endl;
+    cout << "Plaintext hex: " << (stringToHex(ptString)) <<endl;
     string encrypted_text = des_encrypt_text(ptString);
-    // cout << "Encrypted Text (C++): " << encrypted_text << endl; 
     
     string decrypted_text = des_decrypt_text(encrypted_text);
-    cout << "encrypted Hex (C++): " << binaryToHex(encrypted_text) <<endl;
-    cout << "decrypted Hex (C++): " << binaryToHex(decrypted_text) <<endl;
+    cout << "encrypted Hex: " << binaryToHex(encrypted_text) <<endl;
+    cout << "decrypted Hex: " << binaryToHex(decrypted_text) <<endl;
     // return 0;
 
+  // Followings are for measurement purposes
     Serial.print("Free Heap: ");
     Serial.print(ESP.getFreeHeap());
-    Serial.println(" bytes"); 
+    Serial.println(" bytes");
     unsigned long end_time = millis();
     Serial.print("Execution Time: ");
     Serial.print(end_time - start_time);
     Serial.println("milliseconds");
-    delay(30000);  // 3 Seconds of delay for better visibility
+    delay(20000);
 }
