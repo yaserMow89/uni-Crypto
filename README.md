@@ -1,7 +1,7 @@
 # uni-Crypto
 
 
-## Preparing Environment for MS Windows <br>
+## Setting up the Environment for MS Windows <br>
 For windows environment there are only two things needed to run 
 the code (C,C++) on the **ESP chip**, being: <br>
 ### IDE (Arduino_ide):<br>
@@ -19,7 +19,8 @@ Once you are done with Installing both the drivers and the IDE,
 open the IDE, at the first run it will ask for permission to install 
 some packages and also will ask for permissions on your machine, and once they are all 
 done you are all set, to run the code. <br>
-
+## Setting up the Environment for Linxu
+To be added
 ## Selecting the board within the IDE (Linux and Windows):
 Once the environment is set up, and you want to run the code, the board should be selected 
 to run the code on it and also see the output, in order to do that:<br>
@@ -36,7 +37,13 @@ to run the code on it and also see the output, in order to do that:<br>
 there is a **Magnifier** symbol, when you hover mouse over it, will say **Serial Monitor**, 
 Press on it
 * Once the Serial Monitor opens, at the right side of the ribbon there is a Line Manager with two elements:
-    * **New Line** 
+    * **New Line**
+        * Leave it with *New Line*
     * **Number baud**
         * For the *Number baud* select *115200 baud*
 * Once all these steps are done, you should be able to see the output from the ESP Device
+
+
+## OpenSSL installation on Windows 
+* Perl Installation
+* Nasm.us Installation

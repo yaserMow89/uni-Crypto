@@ -440,16 +440,11 @@ int main (){
 void loop() {
 
     unsigned long start_time = millis();
-    Serial.print("Free Heap: ");
-    Serial.print(ESP.getFreeHeap());
-    Serial.print("ESP.getfree");
-    Serial.println("bytes"); 
-
 
   // put your main code here, to run repeatedly:
     string my_key = "1010101010111011000010010001100000100111001101101100110011011101";
     generate_keys(my_key);
-    string ptString = "Hello Wor";
+    string ptString = "I got 1 in ASEL ";
     cout << "Plaintext hex (C++): " << (stringToHex(ptString)) <<endl;
     string encrypted_text = des_encrypt_text(ptString);
     // cout << "Encrypted Text (C++): " << encrypted_text << endl; 
@@ -459,9 +454,12 @@ void loop() {
     cout << "decrypted Hex (C++): " << binaryToHex(decrypted_text) <<endl;
     // return 0;
 
+    Serial.print("Free Heap: ");
+    Serial.print(ESP.getFreeHeap());
+    Serial.println(" bytes"); 
     unsigned long end_time = millis();
     Serial.print("Execution Time: ");
     Serial.print(end_time - start_time);
     Serial.println("milliseconds");
-    delay(1000);
+    delay(30000);  // 3 Seconds of delay for better visibility
 }

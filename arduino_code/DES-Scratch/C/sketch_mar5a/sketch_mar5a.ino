@@ -553,16 +553,27 @@ void setup() {
 }
 
 void loop() {
+    unsigned long start_time = millis();
+
   // put your main code here, to run repeatedly:
     // char* my_key = genKey();
     char* my_key = "001101100011010001100010010101110100010010110110010101111001";
     generate_keys(my_key);
-    char* ptString = "The";
+    char* ptString = "I got 1 in ASEL ";
     printf("Plaintext hex: %s\n", stringToHex(ptString));
     char* encrypted_text = des_encrypt_text(ptString);
     printf("encrypted_text: %s\n", binaryToHex(encrypted_text));
     char* decrypted_text = des_decrypt_text(encrypted_text);
     printf("Decrypted Hex: %s\n", binaryToHex(decrypted_text));
-    delay(10000);
+
+
+    Serial.print("Free Heap: ");
+    Serial.print(ESP.getFreeHeap());
+    Serial.println(" bytes"); 
+    unsigned long end_time = millis();
+    Serial.print("Execution Time: ");
+    Serial.print(end_time - start_time);
+    Serial.println("milliseconds");
+    delay (300000); // 3 Seconds of delay for better visibility
 
 }

@@ -434,10 +434,11 @@ void setup() {
 }
 
 void loop() {
+    unsigned long start_time = millis();
   // put your main code here, to run repeatedly:
     string my_key = "101010101011101100001001000110000010011100110110110011001101110110101010101110110000100100011000001001110011011011001100110111011010101010111011000010010001100000100111001101101100110011011101";
     generate_keys(my_key);
-    string ptString = "I got 1 in ASEL";
+    string ptString = "I got 1 in ASEL ";
     std::cout << "Plain text (C++): " << stringToHex(ptString) << endl; 
     if (my_key.length() == 192 && !ptString.empty()) 
     {
@@ -464,4 +465,12 @@ void loop() {
 
         std::cout << "Decrypted Text (C++): "<< binaryToHex(decrypted_text) << std::endl;
     }
+    Serial.print("Free Heap: ");
+    Serial.print(ESP.getFreeHeap());
+    Serial.println(" bytes"); 
+    unsigned long end_time = millis();
+    Serial.print("Execution Time: ");
+    Serial.print(end_time - start_time);
+    Serial.println("milliseconds");
+    delay (30000); // 3 Seconds of delay for better visibility
 }

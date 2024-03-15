@@ -552,7 +552,7 @@ int main() {
     // char* my_key = genKey();
     char* my_key = "0011011000110100011000100110100101110100010010110110010101111001";
     generate_keys(my_key);
-    char* ptString = "The quick brown fox jumped over the lazy dog";
+    char* ptString = "I got 1 in ASEL ";
     printf("Plaintext hex (C)      : %s\n", stringToHex(ptString));
     char* encrypted_text = des_encrypt_text(ptString);
     printf ("Ciphertext Hex (C)     : %s\n", binaryToHex(encrypted_text));
