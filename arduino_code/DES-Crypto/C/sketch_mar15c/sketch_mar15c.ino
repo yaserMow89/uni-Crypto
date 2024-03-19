@@ -55,7 +55,7 @@ void loop() {
 
   // Followings are for measurement purposes
   Serial.print("Free Heap: ");
-  Serial.print(ESP.getFreeHeap());
+  Serial.print(ESP.getFreeHeap());/home/ym23meq/Desktop/Uni/05/ASEL/uni-Crypto/arduino_code/DES-Scratch/C/sketch_mar5a/sketch_mar5a.ino
   Serial.println(" bytes");
   unsigned long end_time = millis();
   Serial.print("Execution Time: ");

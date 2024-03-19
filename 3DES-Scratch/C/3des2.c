@@ -528,7 +528,7 @@ char* des_decrypt_text(char* ct_string)
      for (int i = 0; i < strlen(ct_string) / 64; i++) {
          strcat(decrypted_text, decrypted_blocks[i]);
      }
-    decrypted_text = realloc(decrypted_text, strlen(decrypted_text) + 1);
+    decrypted_text = (char*) realloc(decrypted_text, strlen(decrypted_text) + 1);
     return decrypted_text;
 }
 
