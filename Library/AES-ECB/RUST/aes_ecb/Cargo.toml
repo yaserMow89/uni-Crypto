@@ -1,0 +1,9 @@
+[package]
+name = "aes_ecb"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+openssl = "0.10.35"
+hex = "0.4.3"
+rand = "0.8.4"

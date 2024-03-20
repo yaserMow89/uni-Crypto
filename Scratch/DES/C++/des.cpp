@@ -9,12 +9,13 @@ using namespace std;
 
 vector<std::string> round_keys(16);
 
-
+// Helper function
 std::string byteToBinary(char byte) {
     std::bitset<8> bits(byte);
     return bits.to_string();
 }
 
+// Helper function
 string binaryToHex(string binaryinput)
 {
 	string paddedBinary = binaryinput;
@@ -35,6 +36,7 @@ string binaryToHex(string binaryinput)
 	return hexstring;
 }
 
+// Helper function
 std::string stringToBinary(const std::string& input) {
     std::string binaryString;
     binaryString.reserve(input.length() * 8);
@@ -46,6 +48,7 @@ std::string stringToBinary(const std::string& input) {
     return binaryString;
 }
 
+// Helper function
 string stringToHex(string input)
 {
 	string hexString;
@@ -58,6 +61,7 @@ string stringToHex(string input)
 	return hexString;
 }
 
+// Helper function
 string hexToString(string input)
 {
 	string result;
@@ -70,6 +74,7 @@ string hexToString(string input)
 	return result;
 }
 
+// Helper function
 string binaryToString(string input)
 {
 	string result;
@@ -83,6 +88,7 @@ string binaryToString(string input)
 	return result;
 }
 
+// Helper function
 string decimalToBinary(int decimal)
 {
 	string binary;
@@ -101,6 +107,7 @@ string decimalToBinary(int decimal)
 	return binary;
 }
 
+// Helper function
 int binaryTodecimal(string input)
 {
 	int decimal = 0;
@@ -117,6 +124,7 @@ int binaryTodecimal(string input)
 	return decimal;
 }
 
+// Shifting function
 string shift_left_once(string keychunk)
 {
 	string shifted;
@@ -125,6 +133,7 @@ string shift_left_once(string keychunk)
 	return shifted;
 }
 
+// Shifting function
 string shift_left_twice(string keychunk)
 {
 	string shifted = keychunk.substr(2);
@@ -132,9 +141,9 @@ string shift_left_twice(string keychunk)
 	return shifted;
 }
 
+
 string Xor(string a, string b)
 {
-    //cout <<"Strings "<<a<<" and "<<b<<endl;
 	string result;
 	for (int i = 0; i < b.length(); i++)
 		{
@@ -150,7 +159,9 @@ string Xor(string a, string b)
 	return result;
 }
 
+// Key Scheduling function
 void generate_keys(string key) {
+
 
     int pc1[56] = {
         57, 49, 41, 33, 25, 17, 9,
@@ -173,6 +184,7 @@ void generate_keys(string key) {
         46, 42, 50, 36, 29, 32
     };
 
+    // Apply Permutation
     std::string permKey(56, ' ');
     for (int i = 0; i < 56; i++) {
         permKey[i] = key[pc1[i] - 1];
@@ -181,6 +193,7 @@ void generate_keys(string key) {
     std::string left = permKey.substr(0, 28);
     std::string right = permKey.substr(28, 28);
 
+    // Generate subkeys
     for (int i = 0; i < 16; i++) {
         if (i == 0 || i == 1 || i == 8 || i == 15) {
             left = shift_left_once(left);
@@ -202,6 +215,7 @@ void generate_keys(string key) {
 }
 	
 
+// Encryption Function
 std::string desEnc(std::string block) {
     std::vector<int> initial_permutation = {
         58,50,42,34,26,18,10,2,
@@ -221,6 +235,7 @@ std::string desEnc(std::string block) {
         22,23,24,25,24,25,26,27,
         28,29,28,29,30,31,32,1
     };
+    // S-boxes
     std::vector<std::vector<std::vector<int>>> substition_boxes = {
         {
             {14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7},
@@ -287,29 +302,33 @@ std::string desEnc(std::string block) {
         34,2,42,10,50,18,58,26,
         33,1,41,9,49,17,57,25
     };
-    string perm(64, '0'); 
+    string perm(64, '0'); // Initialize a string to hold the permuted block
 
+    // Permute input according to initial_permutation
     for(int i = 0; i < 64; i++) {
         perm[i] = block[initial_permutation[i]-1];
     }
-    
+
+    // Split the permuted block into left and right halves
     string left = perm.substr(0, 32);
     string right = perm.substr(32, 32);
     
+    // Perform 16 rounds of DES encryption
     for(int i = 0; i < 16; i++) {
     
+        // Expand the right half to 48 bits
         string rightExpanded(48, '0');
-        
         for(int j = 0; j < 48; j++) {
             rightExpanded[j] = right[expansion_table[j]-1];
         }
-        
+
+        // XOR the expanded right half with the current round key
         string xored = Xor(round_keys[i], rightExpanded); 
         
+        // Apply S-box substitution to the XOR result
         string res(32, '0');
-        
         for(int j = 0; j < 8; j++) {
-        
+            // Extract row and column from the 6-bit blocks
             string row1; 
             row1 += xored[j*6];
             row1 += xored[j*6 + 5];
@@ -320,17 +339,18 @@ std::string desEnc(std::string block) {
             
             int col = binaryTodecimal(col1);
             
+            // Perform substitution using s-boxs
             int val = substition_boxes[j][row][col];
-            
             res += decimalToBinary(val);
         }
         
+        // Permute the result using the permutation_tab
         string perm2(32, '0');
-        
         for(int j = 0; j < 32; j++) {
             perm2[j] = res[permutation_tab[j]-1];
         }
         
+        // Swap left and right halves, except in the last round
         xored = Xor(perm2, left); 
         left = xored;
     
@@ -341,17 +361,23 @@ std::string desEnc(std::string block) {
         }
     }   
     
+    // Combine the left and right halves
     string combinedText = left + right;
     string ciphertext(64, '0');  
     
+    // Permute the combined block according to the inverse_permutation table
     for(int i = 0; i < 64; i++) {
         ciphertext[i] = combinedText[inverse_permutation[i]-1]; 
     }
     
     return ciphertext;
 }
+
+// Function for Decryption
 string desDecryption(string ciphertext)
 {
+
+    // Create the reverse sub-keys
 	int i = 15;
 	int j = 0;
 	while (i > j)
@@ -362,10 +388,13 @@ string desDecryption(string ciphertext)
 			i--;
 			j++;
 		}
+    
+    // Perform the Decryption
 	string decrypted = desEnc(ciphertext);
 	return decrypted;
 }
 
+// Helper function
 string genKey() 
 {
     int keySize = 64;
@@ -374,6 +403,7 @@ string genKey()
     return key;
 }
 
+// Helper function
 string pad(string input_str)
 {
 	int padding_size = 8 - (input_str.length() % 8);
@@ -392,12 +422,11 @@ string pad(string input_str)
 	}
 }
 
+// Helper Function
 string des_encrypt_text(string pt_string)
 {
 	string padded_pt = pad(pt_string);
-	//cout<<"PAdded String "<<padded_pt<<endl;
 	int num_blocks = padded_pt.length() / 8;
-	//cout<<"Blocks Num "<<num_blocks<<endl;
 
 	string blocks;
 	for (int i = 0; i < num_blocks; i++)
@@ -413,6 +442,7 @@ string des_encrypt_text(string pt_string)
 	return encrypted;
 }
 
+// Helper Function
 string des_decrypt_text(string ct_string)
 {
 	string blocks[ct_string.length()];
@@ -431,14 +461,15 @@ string des_decrypt_text(string ct_string)
 int main() 
 {
     cout << "================================== DES (C++)=================================" << endl; 
+    
     string my_key = "1010101010111011000010010001100000100111001101101100110011011101";
-    generate_keys(my_key);
+    // Generate SubKeys
+    generate_keys(my_key); 
     string ptString = "I got 1 in ASEL ";
     cout << "Plaintext: " << (stringToHex(ptString)) <<endl;
-    string encrypted_text = des_encrypt_text(ptString);
-    // cout << "Encrypted Text (C++): " << encrypted_text << endl; 
+    string encrypted_text = des_encrypt_text(ptString); // Preform Encryption
     
-    string decrypted_text = des_decrypt_text(encrypted_text);
+    string decrypted_text = des_decrypt_text(encrypted_text); // Preform Decryption
     cout << "encrypted: " << binaryToHex(encrypted_text) <<endl;
     cout << "decrypted: " << binaryToHex(decrypted_text) <<endl;
     return 0;
