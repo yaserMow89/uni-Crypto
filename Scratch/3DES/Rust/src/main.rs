@@ -1,6 +1,12 @@
 use std::fmt::Write;
 use rand::Rng;
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Since 3des is using DES under the hood, this file has got 
+// no comments, please refer to the des code for looking 
+// into the comments
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 fn byte_to_binary(byte: u8) -> String {
     format!("{:08b}", byte)
 }

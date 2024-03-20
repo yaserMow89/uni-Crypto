@@ -19,6 +19,7 @@ char* byteToBinary(char byte) {
     return binary;
 }
 
+// Helper function
 char* binaryToHex(char* binaryInput) 
 {
     //printf("%s: The length is : %ld\n", binaryInput, strlen(binaryInput));
@@ -50,6 +51,7 @@ char* binaryToHex(char* binaryInput)
     return pt;
 }
 
+// Helper function
 char* stringToBinary(char* input) {
     char* binaryString = (char*)malloc(strlen(input) * 8 + 1);
     binaryString[0] = '\0';
@@ -61,6 +63,7 @@ char* stringToBinary(char* input) {
     return binaryString;
 }
 
+// Helper function
 char* stringToHex(char* input) {
     char* hexString = (char*)malloc(strlen(input) * 2 + 1);
     hexString[0] = '\0';
@@ -72,6 +75,7 @@ char* stringToHex(char* input) {
     return hexString;
 }
 
+// Helper function
 char* hexToString(char* hexString) {
     char* result = (char*)malloc(strlen(hexString) / 2 + 1);
     result[0] = '\0';
@@ -86,6 +90,7 @@ char* hexToString(char* hexString) {
     return result;
 }
 
+// Helper function
 char* binaryToString(char* binaryInput) {
     char* result = (char*)malloc(strlen(binaryInput) / 8 + 1);
     result[0] = '\0';
@@ -100,6 +105,7 @@ char* binaryToString(char* binaryInput) {
     return result;
 }
 
+// Helper function
 char* convertDecimalToBinary(int decimal) {
     char* binary = (char*)malloc(5);
     binary[4] = '\0';
@@ -116,6 +122,7 @@ char* convertDecimalToBinary(int decimal) {
     return binary;
 }
 
+// Helper function
 int convertBinaryToDecimal(char* binary) {
     int decimal = 0;
     int counter = 0;
@@ -129,6 +136,7 @@ int convertBinaryToDecimal(char* binary) {
     return decimal;
 }
 
+// Shifting function
 char* shift_left_once(char* key_chunk) {
     char* shifted = (char*)malloc(strlen(key_chunk) + 1);
     strcpy(shifted, key_chunk + 1);
@@ -137,6 +145,7 @@ char* shift_left_once(char* key_chunk) {
     return shifted;
 }
 
+// Shifting function
 char* shift_left_twice(char* key_chunk) {
     char* shifted = (char*)malloc(strlen(key_chunk) + 1);
     strcpy(shifted, key_chunk + 2);
@@ -158,6 +167,7 @@ char* Xor(char* a, char* b) {
     return result;
 }
 
+// Key Scheduling function
 void generate_keys(char* key) {
     int pc1[56] = {
         57, 49, 41, 33, 25, 17, 9,
@@ -179,6 +189,8 @@ void generate_keys(char* key) {
         44, 49, 39, 56, 34, 53,
         46, 42, 50, 36, 29, 32
     };
+
+    // Apply Permutation
     char perm_key[57];
     perm_key[56] = '\0';
     for (int i = 0; i < 56; i++) {
@@ -190,6 +202,8 @@ void generate_keys(char* key) {
     left[28] = '\0';
     strncpy(right, perm_key + 28, 28);
     right[28] = '\0';
+
+    // Generate subkeys
     for (int i = 0; i < 16; i++) {
         if (i == 0 || i == 1 || i == 8 || i == 15) {
             char* temp = shift_left_once(left);
@@ -219,6 +233,7 @@ void generate_keys(char* key) {
     }
 }
 
+// Encryption Function
 char* desEnc(char* block) {
     int initial_permutation[64] = {
         58, 50, 42, 34, 26, 18, 10, 2,
@@ -238,6 +253,8 @@ char* desEnc(char* block) {
         22, 23, 24, 25, 24, 25, 26, 27,
         28, 29, 28, 29, 30, 31, 32, 1
     };
+
+    // S-boxes
     int substition_boxes[8][4][16] = {
         {
             {14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
@@ -304,27 +321,40 @@ char* desEnc(char* block) {
         34, 2, 42, 10, 50, 18, 58, 26,
         33, 1, 41, 9, 49, 17, 57, 25
     };
-    char perm[65];
+    char perm[65]; // Initialize a string to hold the permuted block
     perm[64] = '\0';
+
+    // Permute input according to initial_permutation
     for (int i = 0; i < 64; i++) {
         perm[i] = block[initial_permutation[i] - 1];
     }
     char left[33];
     char right[33];
+
+    // Split the permuted block into left and right halves
     strncpy(left, perm, 32);
     left[32] = '\0';
     strncpy(right, perm + 32, 32);
     right[32] = '\0';
+
+    // Perform 16 rounds of DES encryption
     for (int i = 0; i < 16; i++) {
+
+        // Expand the right half to 48 bits
         char right_expanded[49];
         right_expanded[48] = '\0';
         for (int j = 0; j < 48; j++) {
             right_expanded[j] = right[expansion_table[j] - 1];
         }
+
+        // XOR the expanded right half with the current round key
         char* xored = Xor(round_keys[i], right_expanded);
+
+        // Apply S-box substitution to the XOR result
         char res[33];
         res[32] = '\0';
         for (int j = 0; j < 8; j++) {
+            // Extract row and column from the 6-bit blocks
             char row1[3];
             row1[0] = xored[j * 6];
             row1[1] = xored[j * 6 + 5];
@@ -334,14 +364,20 @@ char* desEnc(char* block) {
             strncpy(col1, xored + j * 6 + 1, 4);
             col1[4] = '\0';
             int col = convertBinaryToDecimal(col1);
+
+            // Perform substitution using s-boxs
             int val = substition_boxes[j][row][col];
             strcat(res, convertDecimalToBinary(val));
         }
+
+        // Permute the result using the permutation_tab
         char perm2[33];
         perm2[32] = '\0';
         for (int j = 0; j < 32; j++) {
             perm2[j] = res[permutation_tab[j] - 1];
         }
+
+        // Swap left and right halves, except in the last round
         xored = Xor(perm2, left);
         strcpy(left, xored);
         if (i < 15) {
@@ -351,33 +387,43 @@ char* desEnc(char* block) {
             strcpy(left, temp);
         }
     }
+
+    // Combine the left and right halves
     char combined_text[65];
     combined_text[64] = '\0';
     strcpy(combined_text, left);
     strcat(combined_text, right);
     char* ciphertext = (char*)malloc(65);
     ciphertext[64] = '\0';
+
+    // Permute the combined block according to the inverse_permutation table
     for (int i = 0; i < 64; i++) {
         ciphertext[i] = combined_text[inverse_permutation[i] - 1];
     }
     return ciphertext;
 }
 
+// Function for Decryption
 char* desDecryption(char* ciphertext) {
     int i = 15;
     int j = 0;
     while (i > j) {
         char temp[49];
+
+        // Create the reverse sub-keys
         strcpy(temp, round_keys[i]);
         strcpy(round_keys[i], round_keys[j]);
         strcpy(round_keys[j], temp);
         i -= 1;
         j += 1;
     }
+
+    // Perform the Decryption
     char* decrypted = desEnc(ciphertext);
     return decrypted;
 }
 
+// Helper function
 char* genKey() {
     int keySize = 64;
     long keyBits = rand() & ((1L << keySize) - 1);
@@ -390,6 +436,7 @@ char* genKey() {
     return key;
 }
 
+// Helper function
 char* pad(char* input_str) {
     int padding_size = 8 - (strlen(input_str) % 8);
     if (padding_size != 8) {
@@ -404,6 +451,7 @@ char* pad(char* input_str) {
     return input_str;
 }
 
+// Helper function
 char* des_encrypt_text(char* pt_string) {
     char* padded_pt = pad(pt_string);
     
@@ -499,32 +547,51 @@ char* des_encrypt_text(char* pt_string) {
     return encrypted_text;
 }
 
+// Helper function
 char* des_decrypt_text(char* ct_string) 
 {
-    //printf("LEN: %ld", strlen(ct_string));
+
+    // Allocate memory for an array of pointers to store blocks of ciphertext
     char** blocks = (char**)malloc(strlen(ct_string) / 64 * sizeof(char*));
+
+    // Split the ciphertext string into blocks of 64 characters
     for (int i = 0; i < strlen(ct_string); i += 64) {
          blocks[i / 64] = (char*)malloc(65);
          strncpy(blocks[i / 64], ct_string + i, 64);
          blocks[i / 64][64] = '\0';
      }
+
+     // Allocate memory for an array of pointers to store decrypted blocks
      char** decrypted_blocks = (char**)malloc(strlen(ct_string) / 64 * sizeof(char*));
+
+     // Decrypt each block using desDecryption function
      for (int i = 0; i < strlen(ct_string) / 64; i++) {
          char* block = blocks[i];
          char* decrypted = desDecryption(block);
          decrypted_blocks[i] = decrypted;
      }
+
+     // Allocate memory for the decrypted text
      char* decrypted_text = (char*)malloc(strlen(ct_string) + 1);
      decrypted_text[0] = '\0';
+
+    // Concatenate decrypted blocks to form the decrypted text
      for (int i = 0; i < strlen(ct_string) / 64; i++) {
          strcat(decrypted_text, decrypted_blocks[i]);
      }
+
+    // Reallocate memory to fit the exact size of the decrypted text
     decrypted_text = (char*) realloc(decrypted_text, strlen(decrypted_text) + 1);
     return decrypted_text;
 }
+
+// Function to remove custom padding from hex input
 char* remove_custom_padding(char* hex_input) {
+    // Allocate memory for the binary input
     char* binary_input = (char*)malloc(strlen(hex_input) * 4 + 1);
     binary_input[0] = '\0';
+
+    // Convert each hexadecimal character to binary
     for (int i = 0; i < strlen(hex_input); i++) {
         char hexDigit[2];
         strncpy(hexDigit, hex_input + i, 1);
@@ -532,12 +599,20 @@ char* remove_custom_padding(char* hex_input) {
         int decimal = strtol(hexDigit, NULL, 16);
         strcat(binary_input, convertDecimalToBinary(decimal));
     }
+
+    // Calculate the padding size
     int padding_size = convertBinaryToDecimal(binary_input + strlen(binary_input) - 8);
+
+    // Allocate memory for the binary data after removing padding
     char* binary_data = (char*)malloc(strlen(binary_input) - padding_size + 1);
     strncpy(binary_data, binary_input, strlen(binary_input) - padding_size);
     binary_data[strlen(binary_input) - padding_size] = '\0';
+
+    // Allocate memory for the ASCII result
     char* ascii_result = (char*)malloc(strlen(binary_data) / 8 + 1);
     ascii_result[0] = '\0';
+
+    // Convert binary data back to ASCII
     for (int i = 0; i < strlen(binary_data); i += 8) {
         char byteStr[9];
         strncpy(byteStr, binary_data + i, 8);
@@ -549,17 +624,15 @@ char* remove_custom_padding(char* hex_input) {
 }
 
 int main() {
-    // char* my_key = genKey(); // To generate a random key
     printf ("======================= DES (C) ==========================\n");
     char* my_key = "0011011000110100011000100110100101110100010010110110010101111001";
+    // Generate SubKeys
     generate_keys(my_key);
     char* ptString = "I got 1 in ASEL ";
     printf("Plaintext: %s\n", stringToHex(ptString));
     char* encrypted_text = des_encrypt_text(ptString);
     printf ("Ciphertext: %s\n", binaryToHex(encrypted_text));
-    //printf("encrypted_text: %s\n", encrypted_text);
     char* decrypted_text = des_decrypt_text(encrypted_text);
     printf ("decrypted text: %s\n", binaryToHex(decrypted_text));
-    // printf("Decrypted Hex: %s\n", binaryToHex(decrypted_text));
     return 0;
 }

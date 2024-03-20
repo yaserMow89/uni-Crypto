@@ -2,6 +2,15 @@ import random
 
 round_keys = ["" for _ in range(16)]
 
+
+"""
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Since 3des is using DES under the hood, this file has got 
+no comments, please refer to the des code for looking 
+into the comments
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"""
+
 def byteToBinary(byte):
     bits = bin(byte)[2:].zfill(8)
     return bits

@@ -235,6 +235,7 @@ std::string desEnc(std::string block) {
         22,23,24,25,24,25,26,27,
         28,29,28,29,30,31,32,1
     };
+
     // S-boxes
     std::vector<std::vector<std::vector<int>>> substition_boxes = {
         {
@@ -312,10 +313,10 @@ std::string desEnc(std::string block) {
     // Split the permuted block into left and right halves
     string left = perm.substr(0, 32);
     string right = perm.substr(32, 32);
-    
+
     // Perform 16 rounds of DES encryption
     for(int i = 0; i < 16; i++) {
-    
+
         // Expand the right half to 48 bits
         string rightExpanded(48, '0');
         for(int j = 0; j < 48; j++) {
@@ -324,7 +325,7 @@ std::string desEnc(std::string block) {
 
         // XOR the expanded right half with the current round key
         string xored = Xor(round_keys[i], rightExpanded); 
-        
+
         // Apply S-box substitution to the XOR result
         string res(32, '0');
         for(int j = 0; j < 8; j++) {
@@ -338,18 +339,18 @@ std::string desEnc(std::string block) {
             string col1 = xored.substr(j*6 + 1, 4);  
             
             int col = binaryTodecimal(col1);
-            
+
             // Perform substitution using s-boxs
             int val = substition_boxes[j][row][col];
             res += decimalToBinary(val);
         }
-        
+
         // Permute the result using the permutation_tab
         string perm2(32, '0');
         for(int j = 0; j < 32; j++) {
             perm2[j] = res[permutation_tab[j]-1];
         }
-        
+
         // Swap left and right halves, except in the last round
         xored = Xor(perm2, left); 
         left = xored;
@@ -360,11 +361,11 @@ std::string desEnc(std::string block) {
             left = temp; 
         }
     }   
-    
+
     // Combine the left and right halves
     string combinedText = left + right;
     string ciphertext(64, '0');  
-    
+
     // Permute the combined block according to the inverse_permutation table
     for(int i = 0; i < 64; i++) {
         ciphertext[i] = combinedText[inverse_permutation[i]-1]; 
@@ -388,7 +389,7 @@ string desDecryption(string ciphertext)
 			i--;
 			j++;
 		}
-    
+
     // Perform the Decryption
 	string decrypted = desEnc(ciphertext);
 	return decrypted;
@@ -414,7 +415,6 @@ string pad(string input_str)
 				{
 					temp.push_back(padding_size + '0');
 				}
-			//cout<<"Padded temp "<<temp.length()<<endl;
 			return temp;
 		}
 	else{

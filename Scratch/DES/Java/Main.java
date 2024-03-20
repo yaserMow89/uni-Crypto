@@ -18,10 +18,12 @@ public class Main {
         System.out.println("decrypted: " + binaryToHex(decrypted_text));
     }
 
+    // Helper function
     public static String byteToBinary(char byteValue) {
         return String.format("%8s", Integer.toBinaryString(byteValue & 0xFF)).replace(' ', '0');
     }
 
+    // Helper function
     public static String binaryToHex(String binaryInput) {
         StringBuilder paddedBinary = new StringBuilder(binaryInput);
         while (paddedBinary.length() % 4 != 0) {
@@ -36,6 +38,7 @@ public class Main {
         return hexString.toString();
     }
 
+    // Helper function
     public static String stringToBinary(String input) {
         StringBuilder binaryString = new StringBuilder();
         for (char c : input.toCharArray()) {
@@ -44,6 +47,7 @@ public class Main {
         return binaryString.toString();
     }
 
+    // Helper function
     public static String stringToHex(String input) {
         StringBuilder hexString = new StringBuilder();
         for (char c : input.toCharArray()) {
@@ -52,6 +56,7 @@ public class Main {
         return hexString.toString();
     }
 
+    // Helper function
     public static String hexToString(String input) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < input.length(); i += 2) {
@@ -62,6 +67,7 @@ public class Main {
         return result.toString();
     }
 
+    // Helper function
     public static String binaryToString(String input) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < input.length(); i += 8) {
@@ -72,6 +78,7 @@ public class Main {
         return result.toString();
     }
 
+    // Helper function
     public static String decimalToBinary(int decimal) {
         StringBuilder binary = new StringBuilder();
         int index = 3;
@@ -87,6 +94,7 @@ public class Main {
         return binary.toString();
     }
 
+    // Helper function
     public static int binaryToDecimal(String input) {
         int decimal = 0;
         int size = input.length();
@@ -100,18 +108,21 @@ public class Main {
         return decimal;
     }
 
+    // Shifting function
     public static String shift_left_once(String keyChunk) {
         StringBuilder shifted = new StringBuilder(keyChunk.substring(1));
         shifted.append(keyChunk.charAt(0));
         return shifted.toString();
     }
 
+    // Shifting function
     public static String shift_left_twice(String keyChunk) {
         StringBuilder shifted = new StringBuilder(keyChunk.substring(2));
         shifted.append(keyChunk, 0, 2);
         return shifted.toString();
     }
 
+    // Helper function
     public static String Xor(String a, String b) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < b.length(); i++) {
@@ -124,6 +135,7 @@ public class Main {
         return result.toString();
     }
 
+    // Key Scheduling function
     public static void generate_keys(String key) {
         int[] pc1 = {
                 57, 49, 41, 33, 25, 17, 9,
@@ -145,12 +157,16 @@ public class Main {
                 44, 49, 39, 56, 34, 53,
                 46, 42, 50, 36, 29, 32
         };
+
+        // Apply Permutation
         StringBuilder permKey = new StringBuilder();
         for (int i = 0; i < 56; i++) {
             permKey.append(key.charAt(pc1[i] - 1));
         }
         String left = permKey.substring(0, 28);
         String right = permKey.substring(28, 56);
+
+        // Generate subkeys
         for (int i = 0; i < 16; i++) {
             if (i == 0 || i == 1 || i == 8 || i == 15) {
                 left = shift_left_once(left);
@@ -168,6 +184,7 @@ public class Main {
         }
     }
 
+    // Encryption Function
     public static String desEnc(String block) {
         int[] initial_permutation = {
                 58, 50, 42, 34, 26, 18, 10, 2,
@@ -187,6 +204,8 @@ public class Main {
                 22, 23, 24, 25, 24, 25, 26, 27,
                 28, 29, 28, 29, 30, 31, 32, 1
         };
+
+        // S-boxes
         int[][][] substition_boxes = {
                 {
                         {14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
@@ -253,46 +272,70 @@ public class Main {
                 34, 2, 42, 10, 50, 18, 58, 26,
                 33, 1, 41, 9, 49, 17, 57, 25
         };
+
+        // Initialize a string to hold the permuted block
        StringBuilder perm = new StringBuilder(String.join("", Collections.nCopies(64, "0")));
         for(int i = 0; i < 64; i++) {
             perm.setCharAt(i, block.charAt(initial_permutation[i]-1));
         }
+
+        // Split the permuted block into left and right halves
         String left = perm.substring(0, 32);
         String right = perm.substring(32, 32 + 32);
+
+        // Perform 16 rounds of DES encryption
         for(int i = 0; i < 16; i++) {
+
+            // Expand the right half to 48 bits
             StringBuilder rightExpanded = new StringBuilder(String.join("", Collections.nCopies(48, "0")));
             for(int j = 0; j < 48; j++) {
                 rightExpanded.setCharAt(j, right.charAt(expansion_table[j]-1));
             }
+
+            // XOR the expanded right half with the current round key
             String xored = Xor(round_keys.get(i), rightExpanded.toString());
             StringBuilder res = new StringBuilder(String.join("", Collections.nCopies(32, "0")));
             for(int j = 0; j < 8; j++) {
+    
+                // Extract row and column from the 6-bit blocks
                 StringBuilder row1 = new StringBuilder();
                 row1.append(xored.charAt(j*6));
                 row1.append(xored.charAt(j*6 + 5));
                 int row = binaryToDecimal(row1.toString());
                 String col1 = xored.substring(j*6 + 1, j*6 + 5);
                 int col = binaryToDecimal(col1);
+
+                // Perform substitution using s-boxs
                 int val = substition_boxes[j][row][col];
                 res.append(decimalToBinary(val));
             }
+
             StringBuilder perm2 = new StringBuilder(String.join("", Collections.nCopies(32, "0")));
             for(int j = 0; j < 32; j++) {
                 perm2.setCharAt(j, res.charAt(permutation_tab[j]-1));
             }
+
+
+            // Swap left and right halves, except in the last round
             String xored2 = Xor(perm2.toString(), left);
             left = right;
             right = xored2;
         }
+
+        // Combine the left and right halves
         StringBuilder combine = new StringBuilder();
         combine.append(right);
         combine.append(left);
         StringBuilder result = new StringBuilder(String.join("", Collections.nCopies(64, "0")));
+        
+        // Permute the combined block according to the inverse_permutation table
         for(int i = 0; i < 64; i++) {
             result.setCharAt(i, combine.charAt(inverse_permutation[i]-1));
         }
         return result.toString();
     }
+
+    // Helper Function
     public static String pad(String input_str) {
         int padding_size = 8 - (input_str.length() % 8);
         if (padding_size != 8) {
@@ -305,20 +348,21 @@ public class Main {
             return input_str;
         }
     }
+
+    // Helper Function
     public static String des_encrypt_text(String ptString) {
         StringBuilder cipherText = new StringBuilder();
         for (int i = 0; i < ptString.length(); i += 8) {
             String ptBlock = ptString.substring(i, Math.min(i + 8, ptString.length()));
             String binaryString = stringToBinary(pad(ptBlock));
-            // while (binaryString.length() < 64) {
-            //     binaryString += "00000000";
-            // }
+
             String blockEncrypted = desEnc(binaryString);
             cipherText.append(blockEncrypted);
         }
         return cipherText.toString();
     }
 
+    // Helper Function
     public static String des_decrypt_text(String cipherText) {
         StringBuilder plainText = new StringBuilder();
         for (int i = 0; i < cipherText.length(); i += 64) {

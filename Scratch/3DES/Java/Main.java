@@ -3,6 +3,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/*
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Since 3des is using DES under the hood, this file has got 
+no comments, please refer to the des code for looking 
+into the comments
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ */
+
 public class Main {
     private static List<String> round_keys = new ArrayList<>();
     public static void main(String[] args) 

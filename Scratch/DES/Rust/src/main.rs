@@ -1,10 +1,12 @@
 use std::fmt::Write;
 
 
+// Helper function
 fn byte_to_binary(byte: u8) -> String {
     format!("{:08b}", byte)
 }
 
+// Helper function
 fn binary_to_hex(binary_input: &str) -> String {
     let mut padded_binary = String::from(binary_input);
     while padded_binary.len() % 4 != 0 {
@@ -19,6 +21,7 @@ fn binary_to_hex(binary_input: &str) -> String {
     hex_string
 }
 
+// Helper function
 fn string_to_binary(input: &str) -> String {
     let mut binary_string = String::new();
     for c in input.chars() {
@@ -27,6 +30,7 @@ fn string_to_binary(input: &str) -> String {
     binary_string
 }
 
+// Helper function
 fn string_to_hex(input: &str) -> String {
     let mut hex_string = String::new();
     for c in input.chars() {
@@ -35,6 +39,7 @@ fn string_to_hex(input: &str) -> String {
     hex_string
 }
 
+// Helper function
 fn hex_to_string(input: &str) -> String {
     let mut result = String::new();
     for i in (0..input.len()).step_by(2) {
@@ -45,6 +50,7 @@ fn hex_to_string(input: &str) -> String {
     result
 }
 
+// Helper function
 fn binary_to_string(input: &str) -> String {
     let mut result = String::new();
     for i in (0..input.len()).step_by(8) {
@@ -55,6 +61,7 @@ fn binary_to_string(input: &str) -> String {
     result
 }
 
+// Helper function
 fn decimal_to_binary(decimal: u8) -> String {
     let mut binary = String::new();
     let mut index = 3;
@@ -71,6 +78,7 @@ fn decimal_to_binary(decimal: u8) -> String {
     binary
 }
 
+// Helper function
 fn binary_to_decimal(input: &str) -> u8 {
     let mut decimal = 0;
     let size = input.len();
@@ -84,12 +92,14 @@ fn binary_to_decimal(input: &str) -> u8 {
     decimal
 }
 
+// Helper function
 fn shift_left_once(key_chunk: &str) -> String {
     let mut shifted = String::from(&key_chunk[1..]);
     shifted.push(key_chunk.chars().next().unwrap());
     shifted
 }
 
+// Helper function
 fn shift_left_twice(key_chunk: &str) -> String {
     let mut shifted = String::from(&key_chunk[2..]);
     shifted.push_str(&key_chunk[..2]);
@@ -108,6 +118,7 @@ fn xor(a: &str, b: &str) -> String {
     result
 }
 
+// Key Scheduling function
 fn generate_keys(key: &str) -> Vec<String> {
     let pc1 = [
         57, 49, 41, 33, 25, 17, 9, 1,
@@ -126,6 +137,8 @@ fn generate_keys(key: &str) -> Vec<String> {
         51, 45, 33, 48, 44, 49, 39, 56,
         34, 53, 46, 42, 50, 36, 29, 32
     ];
+    
+    // Permutation
     let mut perm_key = String::with_capacity(56);
     for &index in &pc1 {
         perm_key.push(key.chars().nth(index - 1).unwrap());
@@ -133,6 +146,8 @@ fn generate_keys(key: &str) -> Vec<String> {
     let left = &perm_key[..28];
     let right = &perm_key[28..];
     let mut round_keys = Vec::with_capacity(16);
+
+    // Generate subkeys
     for i in 0..16 {
         let combined_key = if i == 0 || i == 1 || i == 8 || i == 15 {
             shift_left_once(left) + &shift_left_once(right)
@@ -148,6 +163,7 @@ fn generate_keys(key: &str) -> Vec<String> {
     round_keys
 }
 
+// Main Encryption Function
 fn des_enc(block: &str, round_keys: &[String]) -> String {
     let initial_permutation = [
         58,50,42,34,26,18,10,2,
@@ -238,9 +254,16 @@ fn des_enc(block: &str, round_keys: &[String]) -> String {
     let right = &perm[32..];
     let mut left_clone = String::new();
     let mut right_clone = String::new();
+
+    // Permute input according to initial_permutation
     for i in 0..16 {
+        // Perform the expansion operation on the right half of the block
         let right_expanded = expansion_table.iter().map(|&index| right.chars().nth(index - 1).unwrap()).collect::<String>();
+        
+        // Perform the XOR operation between the round key and the expanded right half
         let xored = xor(&round_keys[i], &right_expanded);
+
+        // Apply the S-box substitution to each 6-bit block
         let mut res = String::with_capacity(32);
         for j in 0..8 {
             let row1 = &xored[j*6..j*6+1];
@@ -250,24 +273,31 @@ fn des_enc(block: &str, round_keys: &[String]) -> String {
             let val = substitution_boxes[j][row as usize][col as usize];
             res.push_str(&decimal_to_binary(val));
         }
+
+        // Perform the permutation operation
         let mut perm2 = String::with_capacity(32);
         for &index in &permutation_tab {
             perm2.push(res.chars().nth(index - 1).unwrap());
         }
+
+        // Perform the XOR operation between the permuted block and the left half
         let xored = xor(&perm2, left);
         left_clone = xored.clone().to_string();
         right_clone = right.to_string();
+
+        // Swap left and right halves except in the last round
         if i < 15
         {
             let temp = right_clone;
             right_clone = xored.clone().to_string();
             left_clone = temp.clone().to_string();
         }
-        // let temp = right.to_owned();
-        // let right = xored;
-        // let left = temp;
     }
+
+    // Combine the left and right halves
     let combined_text = left_clone.to_owned() + &right_clone;
+
+    // Perform the final inverse permutation
     let mut ciphertext = String::with_capacity(64);
     for &index in &inverse_permutation {
         ciphertext.push(combined_text.chars().nth(index - 1).unwrap());
@@ -275,13 +305,18 @@ fn des_enc(block: &str, round_keys: &[String]) -> String {
     ciphertext
 }
 
+// Function to perform DES decryption by reversing the round keys and calling the encryption function
 fn des_decryption(ciphertext: &str, round_keys: &[String]) -> String {
+    // Reverse the order of round keys
     let mut round_keys = round_keys.to_owned();
     round_keys.reverse();
+
+    // Call the encryption function with reversed round keys
     des_enc(ciphertext, &round_keys)
 }
 
-
+// Helper Function
+// Function to pad the input string with null characters if its length is not a multiple of 8
 fn pad(input_str: &str) -> String {
     let padding_size = 8 - (input_str.len() % 8);
     if padding_size != 8 {
@@ -295,7 +330,9 @@ fn pad(input_str: &str) -> String {
     }
 }
 
+// Helper Function
 fn des_encrypt_text(pt_string: &str, round_keys: &[String]) -> String {
+
     let padded_pt = pad(pt_string);
     let num_blocks = padded_pt.len() / 8;
     let mut blocks = String::new();
@@ -310,7 +347,7 @@ fn des_encrypt_text(pt_string: &str, round_keys: &[String]) -> String {
     encrypted
 }
 
-
+// Helper Function
 fn des_decrypt_text(ct_string: &str, round_keys: &[String]) -> String {
     let mut blocks: Vec<String> = Vec::new();
     for i in (0..ct_string.len()).step_by(64) {

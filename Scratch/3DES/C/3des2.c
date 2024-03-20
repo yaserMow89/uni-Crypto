@@ -5,6 +5,13 @@
 char round_keys[16][49];
 char pt[1024] = "";
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Since 3des is using DES under the hood, this file has got 
+// no comments, please refer to the des code for looking 
+// into the comments
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 char* byteToBinary(char byte) {
     char* binary = (char*)malloc(9); // 8 bits + '\0'
     int index = 7;

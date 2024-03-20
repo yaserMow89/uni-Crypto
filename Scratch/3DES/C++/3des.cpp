@@ -9,6 +9,11 @@ using namespace std;
 
 vector<std::string> round_keys(16);
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Since 3des is using DES under the hood, this file has got 
+// no comments, please refer to the des code for looking 
+// into the comments
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 std::string byteToBinary(char byte) {
     std::bitset<8> bits(byte);

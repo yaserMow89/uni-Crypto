@@ -2,10 +2,12 @@ import random
 
 round_keys = ["" for _ in range(16)]
 
+# Helper function
 def byteToBinary(byte):
     bits = bin(byte)[2:].zfill(8)
     return bits
 
+# Helper function
 def binaryToHex(binaryinput):
     paddedBinary = binaryinput
     while len(paddedBinary) % 4 != 0:
@@ -18,12 +20,14 @@ def binaryToHex(binaryinput):
         hexstring += hexdigit
     return hexstring
 
+# Helper function
 def stringToBinary(input):
     binaryString = ""
     for c in input:
         binaryString += byteToBinary(ord(c))
     return binaryString
 
+# Helper function
 def stringToHex(input):
     hexString = ""
     for c in input:
@@ -31,6 +35,7 @@ def stringToHex(input):
         hexString += hexdigit
     return hexString
 
+# Helper function
 def hexToString(input):
     result = ""
     for i in range(0, len(input), 2):
@@ -39,6 +44,7 @@ def hexToString(input):
         result += chr(decimal)
     return result
 
+# Helper function
 def binaryToString(input):
     result = ""
     for i in range(0, len(input), 8):
@@ -47,6 +53,7 @@ def binaryToString(input):
         result += chr(decimal)
     return result
 
+# Helper function
 def decimalToBinary(decimal):
     binary = ""
     index = 3
@@ -59,6 +66,7 @@ def decimalToBinary(decimal):
         index -= 1
     return binary
 
+# Helper function
 def binaryTodecimal(input):
     decimal = 0
     size = len(input)
@@ -69,10 +77,12 @@ def binaryTodecimal(input):
         counter += 1
     return decimal
 
+# Shifting
 def shift_left_once(keychunk):
     shifted = keychunk[1:] + keychunk[0]
     return shifted
 
+# Double Shifting
 def shift_left_twice(keychunk):
     shifted = keychunk[2:] + keychunk[:2]
     return shifted
@@ -85,7 +95,7 @@ def Xor(a, b):
         else:
             result += "0"
     return result
-
+# Key Scheduling Function
 def generate_keys(key):
     pc1 = [
         57, 49, 41, 33, 25, 17, 9, 1,
@@ -104,11 +114,15 @@ def generate_keys(key):
         51, 45, 33, 48, 44, 49, 39, 56,
         34, 53, 46, 42, 50, 36, 29, 32
     ]
+
+    # Applying permutation
     permKey = ""
     for i in range(56):
         permKey += key[pc1[i] - 1]
     left = permKey[:28]
     right = permKey[28:]
+
+    # Generating subkeys
     for i in range(16):
         if i == 0 or i == 1 or i == 8 or i == 15:
             left = shift_left_once(left)
@@ -122,6 +136,7 @@ def generate_keys(key):
             roundKey += combinedKey[pc2[j] - 1]
         round_keys[i] = roundKey
 
+# Encryption Function
 def desEnc(block):
     initial_permutation = [
         58,50,42,34,26,18,10,2,
@@ -141,6 +156,8 @@ def desEnc(block):
         22,23,24,25,24,25,26,27,
         28,29,28,29,30,31,32,1
     ]
+    
+    # S-boxes
     substition_boxes = [
         [
             [14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7],
@@ -207,59 +224,90 @@ def desEnc(block):
         34,2,42,10,50,18,58,26,
         33,1,41,9,49,17,57,25
     ]
+
+    # Initialize a string to hold the permuted block
     perm = ['0'] * 64
+    # Permute input according to initial_permutation
     for i in range(64):
         perm[i] = block[initial_permutation[i]-1]
+    
+    # Split the permuted block into left and right halves
     left = perm[:32]
     right = perm[32:32+32]
+
+    # Perform 16 rounds of DES encryption
     for i in range(16):
+
+        # Expand the right half to 48 bits
         rightExpanded = ['0'] * 48
         for j in range(48):
             rightExpanded[j] = right[expansion_table[j]-1]
+        
+        # XOR the expanded right half with the current round key
         xored = Xor(round_keys[i], rightExpanded)
         res = ['0'] * 32
+
+        # Apply S-box substitution to the XOR result
         for j in range(8):
+
+            # Extract row and column from the 6-bit blocks
             row1 = xored[j*6] + xored[j*6 + 5]
             row = binaryTodecimal(row1)
             col1 = xored[j*6 + 1:j*6 + 5]
             col = binaryTodecimal(col1)
+            
+            # Perform substitution using s-boxs
             val = substition_boxes[j][row][col]
             res += decimalToBinary(val)
+        
+        # Permute the result using the permutation_tab
         perm2 = ['0'] * 32
         for j in range(32):
             perm2[j] = res[permutation_tab[j]-1]
+        
+        # Swap left and right halves, except in the last round
         xored = Xor(perm2, left)
         left = xored
         if i < 15:
             temp = right
             right = xored
             left = temp
+        
+    # Combine the left and right halves
     combinedText = left + right
     ciphertext = ['0'] * 64
+
+    # Permute the combined block according to the inverse_permutation table
     for i in range(64):
         ciphertext[i] = combinedText[inverse_permutation[i]-1]
     return ''.join(ciphertext)
 
 
-
+# Main Decryption Function
 def desDecryption(ciphertext):
     i = 15
     j = 0
+
+    # Extract the reverse subkeys
     while i > j:
         temp = round_keys[i]
         round_keys[i] = round_keys[j]
         round_keys[j] = temp
         i -= 1
         j += 1
+    
+    # Decryption:
     decrypted = desEnc(ciphertext)
     return decrypted
 
+# Helper function
 def genKey():
     keySize = 64
     keyBits = random.randint(0, (1 << keySize) - 1)
     key = format(keyBits, "064b")
     return key
 
+# Helper function
 def pad(input_str):
     padding_size = 8 - (len(input_str) % 8)
     if padding_size != 8:
@@ -270,6 +318,7 @@ def pad(input_str):
     else:
         return input_str
 
+# Helper function
 def des_encrypt_text(pt_string):
     padded_pt = pad(pt_string)
     num_blocks = len(padded_pt) // 8
@@ -280,6 +329,7 @@ def des_encrypt_text(pt_string):
         encrypted += ct
     return encrypted
 
+# Helper function
 def des_decrypt_text(ct_string):
     blocks = [ct_string[i:i+64] for i in range(0, len(ct_string), 64)]
     decrypted = ""
