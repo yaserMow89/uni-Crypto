@@ -1,0 +1,20 @@
+Libraries used:
+1.	mbedtls/aes.h (C/C++):
+o	mbedtls is a lightweight cryptographic and SSL/TLS library written in C.
+o	mbedtls/aes.h provides functions for AES encryption and decryption.
+o	For AES ECB, you typically use mbedtls_aes_setkey_enc() to set the encryption key and mbedtls_aes_crypt_ecb() to perform encryption.
+o	For AES CBC, you would use mbedtls_aes_setkey_enc() to set the encryption key, and mbedtls_aes_crypt_cbc() to perform encryption in CBC mode.
+2.	javax.crypto.Cipher (Java):
+o	javax.crypto.Cipher is a part of the Java Cryptography Architecture (JCA).
+o	For AES ECB, you instantiate a Cipher object with the transformation "AES/ECB/PKCS5Padding" and call init() with the appropriate mode (e.g., Cipher.ENCRYPT_MODE).
+o	For AES CBC, you would use the transformation "AES/CBC/PKCS5Padding" and call init() with the appropriate mode, along with an initialization vector (IV).
+3.	Crypto.Cipher AES (Python):
+o	Crypto.Cipher module is part of the PyCryptodome library, which is a fork of PyCrypto.
+o	For AES ECB, you create an AES cipher object with AES.new() specifying the mode as MODE_ECB, and then call encrypt() or decrypt() methods.
+o	For AES CBC, you would specify the mode as MODE_CBC and provide an initialization vector (IV) along with the key when creating the cipher object.
+4.	openssl (Rust):
+o	openssl crate provides bindings to OpenSSL library for cryptographic operations in Rust.
+o	For AES ECB and CBC, you can use functions from the openssl::symm module.
+o	For AES ECB, you create a Crypter object with Cipher::aes_128_ecb() or Cipher::aes_256_ecb(), and then call encrypt() or decrypt() methods.
+o	For AES CBC, you create a Crypter object with Cipher::aes_128_cbc() or Cipher::aes_256_cbc(), and then call encrypt() or decrypt() methods with an initialization vector (IV).
+
