@@ -59,7 +59,7 @@ You can simply Compile the code and flash it on the device, everytime you wish t
     Scratch/DES
     Scratch/RSA    
 ```
-> Note: The instructions on how to run the *AES-CBC* & *AES-ECB* is given within the directories themselves, in a *README* file
+> Note: The instructions on how to run the *AES-CBC* & *AES-ECB* is given within the directories themselves, in a *README* file, you have to download those *README* files, and then look into them.
 * We used the *Visual Studio Code* for our linux environment as IDE, it can be installed using the command `sudo snap install code --classic` 
 * Visual Studio Code was used for all the languages apart from the *Rust*.
 * Running the **C/C++** codes:
