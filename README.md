@@ -1,6 +1,8 @@
 UNI-CRYPTO
 =================================
 
+> The repo is also available on github: [repo link](https://github.com/yaserMow89/uni-Crypto)
+
 ## Setting up the Environment for MS Windows <br>
 For windows environment there are only two things needed to run the code (C,C++) on the **ESP chip**, being:
 ### IDE (Arduino_ide):
